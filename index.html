@@ -29,7 +29,7 @@
       max-width: 300px;
       font-size: 18px;
     }
-    button, a.whatsapp-share {
+    button {
       padding: 10px 20px;
       font-size: 16px;
       margin: 10px 5px;
@@ -54,14 +54,13 @@
   <br />
   <button onclick="generateCard()">إنشاء وتحميل البطاقة (PDF)</button>
   <button onclick="downloadImage()">تحميل كصورة (PNG)</button>
-  <a href="#" id="whatsappShare" class="whatsapp-share" target="_blank">مشاركة عبر واتساب</a>
 
   <div id="card-container">
     <canvas id="cardCanvas" width="600" height="900"></canvas>
   </div>
 
   <div class="note">
-    ملاحظة: على الهاتف، سيتم عرض الصورة في صفحة جديدة. اضغط مطولاً على الصورة واختر "تنزيل الصورة".
+    ملاحظة: على الهاتف، سيتم تحميل الصورة بدلاً من فتحها في صفحة جديدة.
   </div>
 
   <script>
@@ -69,7 +68,7 @@
     const ctx = canvas.getContext("2d");
 
     const baseImage = new Image();
-    baseImage.src = "https://i.postimg.cc/7hspBx1J/Whats-App-Image-2025-06-05-at-1-33-48-PM.jpg";
+    baseImage.src = "https://via.placeholder.com/600x400.png?text=بطاقة+تهنئة";
 
     baseImage.onload = () => {
       ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
@@ -86,7 +85,7 @@
       ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
 
       ctx.font = "30px Arial";
-      ctx.fillStyle = "#f0f0f5";
+      ctx.fillStyle = "#00008B";
       ctx.textAlign = "center";
       ctx.fillText("عيدكم مبارك مع: " + name, canvas.width / 2, canvas.height - 50);
 
@@ -94,8 +93,6 @@
       const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: [600, 400] });
       pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, 600, 400);
       pdf.save("بطاقة_تهنئة.pdf");
-
-      updateWhatsAppLink(name);
     }
 
     function downloadImage() {
@@ -114,19 +111,11 @@
 
       const imageDataUrl = canvas.toDataURL('image/png');
 
-      // فتح الصورة في تبويب جديد بدلاً من التحميل التلقائي
-      const newTab = window.open();
-      newTab.document.write(`<img src="${imageDataUrl}" style="width:100%;height:auto;" alt="بطاقة تهنئة" />`);
-      newTab.document.title = "بطاقة تهنئة";
-
-      updateWhatsAppLink(name);
-    }
-
-    function updateWhatsAppLink(name) {
-      const message = `👋 أرسل لك ${name} بطاقة تهنئة! 🌟\nجربها الآن من هنا:`;
-      const url = encodeURIComponent(window.location.href);
-      const fullMessage = encodeURIComponent(message + "\n" + url);
-      document.getElementById("whatsappShare").href = `https://wa.me/?text=${fullMessage}`;
+      // تحميل الصورة بدلاً من فتحها في تبويب جديد
+      const link = document.createElement('a');
+      link.href = imageDataUrl;
+      link.download = 'بطاقة_تهنئة.png';
+      link.click();
     }
   </script>
 </body>

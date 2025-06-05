@@ -112,12 +112,13 @@
         return;
       }
 
-      // استخدام toBlob بدلاً من toDataURL لتحميل الصورة
+      // استخدام canvas.toBlob لتحميل الصورة بشكل موثوق
       canvas.toBlob(function(blob) {
+        // إنشاء رابط تحميل للصورة مباشرة
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = 'بطاقة_تهنئة.png';
-        link.click();
+        link.download = 'بطاقة_تهنئة.png'; // تحديد اسم الصورة عند التحميل
+        link.click(); // محاكاة النقر لتحميل الصورة
       }, 'image/png');
     }
   </script>

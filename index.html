@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>بطاقة تهنئة مخصصة</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      direction: rtl;
+      text-align: center;
+      padding: 20px;
+    }
+    #card-container {
+      position: relative;
+      width: 600px;
+      margin: auto;
+    }
+    canvas {
+      border: 1px solid #ccc;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 300px;
+      font-size: 18px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>أنشئ بطاقة تهنئة باسمك</h1>
+  <input type="text" id="userName" placeholder="أدخل اسمك هنا" />
+  <br />
+  <button onclick="generateCard()">إنشاء وتحميل البطاقة</button>
+
+  <div id="card-container">
+    <canvas id="cardCanvas" width="600" height="1000"></canvas>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("cardCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // تحميل صورة البطاقة الأساسية
+    const baseImage = new Image();
+    baseImage.src = "https://i.postimg.cc/7hspBx1J/Whats-App-Image-2025-06-05-at-1-33-48-PM.jpg";
+
+    baseImage.onload = () => {
+      ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
+    };
+
+    function generateCard() {
+      const name = document.getElementById("userName").value.trim();
+      if (!name) {
+        alert("يرجى إدخال الاسم أولاً.");
+        return;
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
+
+      ctx.font = "30px Arial";
+      ctx.fillStyle = "#00008B";
+      ctx.textAlign = "center";
+      ctx.fillText("مع تحيات: " + name, canvas.width / 2, canvas.height - 50);
+
+      // حفظ كـ PDF
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: [600, 400] });
+      pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, 600, 400);
+      pdf.save("بطاقة_تهنئة.pdf");
+    }
+  </script>
+</body>
+</html>

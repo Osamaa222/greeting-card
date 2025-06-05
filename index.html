@@ -72,7 +72,7 @@
   <button onclick="downloadImage()">تحميل كصورة (PNG)</button>
 
   <div id="card-container">
-    <canvas id="cardCanvas" width="600" height="900"></canvas>
+    <canvas id="cardCanvas" width="500" height="900"></canvas>
   </div>
 
   <div class="note" id="downloadNote">
@@ -96,7 +96,7 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);  // إعادة رسم الصورة الأساسية
         ctx.font = "30px Arial";
-        ctx.fillStyle = "#00008B";
+        ctx.fillStyle = "#f0f0f5";
         ctx.textAlign = "center";
         ctx.fillText("عيدكم مبارك مع : " + name, canvas.width / 2, canvas.height - 50);
         document.getElementById("downloadNote").style.display = "block";

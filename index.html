@@ -29,11 +29,17 @@
       max-width: 300px;
       font-size: 18px;
     }
-    button {
+    button, a.whatsapp-share {
       padding: 10px 20px;
       font-size: 16px;
       margin: 10px 5px;
       cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      background-color: #25D366;
+      color: white;
+      border: none;
+      border-radius: 5px;
     }
     .note {
       font-size: 14px;
@@ -48,6 +54,7 @@
   <br />
   <button onclick="generateCard()">إنشاء وتحميل البطاقة (PDF)</button>
   <button onclick="downloadImage()">تحميل كصورة (PNG)</button>
+  <a href="#" id="whatsappShare" class="whatsapp-share" target="_blank">مشاركة عبر واتساب</a>
 
   <div id="card-container">
     <canvas id="cardCanvas" width="600" height="900"></canvas>
@@ -81,12 +88,14 @@
       ctx.font = "30px Arial";
       ctx.fillStyle = "#00008B";
       ctx.textAlign = "center";
-      ctx.fillText("عيكم مبارك مع : " + name, canvas.width / 2, canvas.height - 50);
+      ctx.fillText("عيدكم مبارك مع: " + name, canvas.width / 2, canvas.height - 50);
 
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: [600, 400] });
       pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, 600, 400);
       pdf.save("بطاقة_تهنئة.pdf");
+
+      updateWhatsAppLink(name);
     }
 
     function downloadImage() {
@@ -101,12 +110,21 @@
       ctx.font = "30px Arial";
       ctx.fillStyle = "#00008B";
       ctx.textAlign = "center";
-      ctx.fillText("عيدكم مبارك مع : " + name, canvas.width / 2, canvas.height - 50);
+      ctx.fillText("عيدكم مبارك مع: " + name, canvas.width / 2, canvas.height - 50);
 
       const link = document.createElement('a');
       link.download = 'بطاقة_تهنئة.png';
       link.href = canvas.toDataURL('image/png');
       link.click();
+
+      updateWhatsAppLink(name);
+    }
+
+    function updateWhatsAppLink(name) {
+      const message = `👋 أرسل لك ${name} بطاقة تهنئة! 🌟\nجربها الآن من هنا:`;
+      const url = encodeURIComponent(window.location.href);
+      const fullMessage = encodeURIComponent(message + "\n" + url);
+      document.getElementById("whatsappShare").href = `https://wa.me/?text=${fullMessage}`;
     }
   </script>
 </body>

@@ -58,7 +58,7 @@
   </div>
 
   <div class="note">
-    ملاحظة: على الهاتف، سيتم تحميل الصورة بدلاً من فتحها في صفحة جديدة.
+    ملاحظة: بعد إدخال اسمك، سيظهر التصميم ويمكنك تحميل الصورة مباشرة.
   </div>
 
   <script>
@@ -70,7 +70,24 @@
 
     baseImage.onload = () => {
       ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
+      updateCardText();
     };
+
+    // تحديث النص على البطاقة بناءً على الاسم المدخل
+    function updateCardText() {
+      const name = document.getElementById("userName").value.trim();
+      if (name) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);  // إعادة رسم الصورة الأساسية
+        ctx.font = "30px Arial";
+        ctx.fillStyle = "#00008B";
+        ctx.textAlign = "center";
+        ctx.fillText("عيدكم مبارك مع : " + name, canvas.width / 2, canvas.height - 50);
+      }
+    }
+
+    // إضافة مستمع للأحداث عند إدخال النص
+    document.getElementById("userName").addEventListener("input", updateCardText);
 
     function downloadImage() {
       const name = document.getElementById("userName").value.trim();
@@ -79,18 +96,11 @@
         return;
       }
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
-      ctx.font = "24px Arial";
-      ctx.fillStyle = "#f0f0f5";
-      ctx.textAlign = "center";
-      ctx.fillText("عيدكم مبارك مع : " + name, canvas.width / 2, canvas.height - 50);
-
       const imageDataUrl = canvas.toDataURL('image/png');
 
-      // فتح الصورة في نافذة جديدة مع زر تحميل
+      // فتح الصورة في نافذة جديدة مع رابط تحميل
       const newWindow = window.open();
-      newWindow.document.write('<img src="' + imageDataUrl + '" alt="بطاقة تهنئة" />');
+      newWindow.document.write('<img src="' + imageDataUrl + '" alt="بطاقة تهنئة" style="width:100%;height:auto;" />');
       newWindow.document.write('<a href="' + imageDataUrl + '" download="بطاقة_تهنئة.png"><button>تحميل الصورة</button></a>');
       newWindow.document.close();
     }

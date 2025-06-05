@@ -3,34 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>بطاقة تهنئة مخصصة</title>
+  <title>أنشئ بطاقة تهنئة مخصصة</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <style>
     body {
       font-family: 'Arial', sans-serif;
       direction: rtl;
       text-align: center;
+      background-color: #f4f4f9;
       padding: 20px;
+    }
+    h1 {
+      color: #4CAF50;
+      font-size: 24px;
     }
     #card-container {
       position: relative;
       width: 100%;
       max-width: 600px;
       margin: auto;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
     }
     canvas {
-      border: 1px solid #ccc;
+      border: none;
       width: 100%;
       height: auto;
+      display: block;
     }
     input[type="text"] {
-      padding: 10px;
+      padding: 12px;
       width: 80%;
       max-width: 300px;
       font-size: 18px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      text-align: center;
     }
     button {
-      padding: 10px 20px;
+      padding: 12px 25px;
       font-size: 16px;
       margin: 10px 5px;
       cursor: pointer;
@@ -40,17 +54,24 @@
       color: white;
       border: none;
       border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #128C7E;
     }
     .note {
       font-size: 14px;
       color: #555;
       margin-top: 10px;
     }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <h1>أنشئ بطاقة تهنئة باسمك</h1>
-  <input type="text" id="userName" placeholder="أدخل اسمك هنا" />
+  <input type="text" id="userName" placeholder="أدخل اسمك هنا" oninput="updateCardText()" />
   <br />
   <button onclick="downloadImage()">تحميل كصورة (PNG)</button>
 
@@ -58,14 +79,13 @@
     <canvas id="cardCanvas" width="600" height="900"></canvas>
   </div>
 
-  <div class="note">
-    ملاحظة: بعد إدخال اسمك، سيظهر التصميم ويمكنك تحميل الصورة مباشرة.
+  <div class="note hidden" id="downloadNote">
+    <p>تم إنشاء البطاقة بنجاح! يمكنك تحميلها الآن.</p>
   </div>
 
   <script>
     const canvas = document.getElementById("cardCanvas");
     const ctx = canvas.getContext("2d");
-
     const baseImage = new Image();
     baseImage.src = "https://i.postimg.cc/7hspBx1J/Whats-App-Image-2025-06-05-at-1-33-48-PM.jpg";
 
@@ -74,21 +94,20 @@
       updateCardText();
     };
 
-    // تحديث النص على البطاقة بناءً على الاسم المدخل
     function updateCardText() {
       const name = document.getElementById("userName").value.trim();
       if (name) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);  // إعادة رسم الصورة الأساسية
+        ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height); // إعادة رسم الصورة الأساسية
         ctx.font = "30px Arial";
         ctx.fillStyle = "#00008B";
         ctx.textAlign = "center";
         ctx.fillText("عيدكم مبارك مع : " + name, canvas.width / 2, canvas.height - 50);
+        document.getElementById("downloadNote").classList.remove("hidden");
+      } else {
+        document.getElementById("downloadNote").classList.add("hidden");
       }
     }
-
-    // إضافة مستمع للأحداث عند إدخال النص
-    document.getElementById("userName").addEventListener("input", updateCardText);
 
     function downloadImage() {
       const name = document.getElementById("userName").value.trim();
@@ -97,17 +116,12 @@
         return;
       }
 
-      // الحصول على بيانات الصورة من الـ Canvas
       const imageDataUrl = canvas.toDataURL('image/png');
-
-      // تحويل الـ DataURL إلى Blob
       const imageBlob = dataURLToBlob(imageDataUrl);
 
-      // استخدام FileSaver.js لتحميل الصورة بشكل احترافي
       saveAs(imageBlob, 'بطاقة_تهنئة.png');
     }
 
-    // تحويل DataURL إلى Blob
     function dataURLToBlob(dataURL) {
       const byteString = atob(dataURL.split(',')[1]);
       const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];

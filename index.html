@@ -12,6 +12,8 @@
     button { padding: 12px 25px; font-size: 16px; margin: 10px 5px; cursor: pointer; background: #25d366; color: #fff; border: none; border-radius: 6px; }
     button:hover { background: #128c7e; }
     .note { color: #555; font-size: 14px; margin-top: 10px; }
+    .hidden { display: none; }
+    #shareLink { width: 80%; max-width: 300px; padding: 10px; margin-top: 20px; font-size: 16px; text-align: center; }
   </style>
 </head>
 <body>
@@ -20,13 +22,16 @@
     <input type="text" id="userName" placeholder="اكتب اسمك هنا" oninput="drawCard()" />
     <canvas id="cardCanvas" width="600" height="900"></canvas>
     <br>
-    <button onclick="shareImage()">مشاركة البطاقة</button>
-    <div class="note">بعد إدخال اسمك اضغط على مشاركة البطاقة لإرسالها عبر واتساب أو أي تطبيق آخر.<br>إذا لم يعمل زر المشاركة، احفظ الصورة يدوياً بالضغط عليها مطولاً.</div>
+    <button onclick="generateImageLink()">مشاركة الصورة</button>
+    <div class="note hidden" id="shareLinkNote">
+      <p>تم إنشاء البطاقة بنجاح! يمكنك مشاركة الصورة عبر الرابط:</p>
+      <input type="text" id="shareLink" readonly />
+    </div>
   </div>
 
   <script>
-    const canvas = document.getElementById('cardCanvas');
-    const ctx = canvas.getContext('2d');
+    const canvas = document.getElementById("cardCanvas");
+    const ctx = canvas.getContext("2d");
     const baseImage = new Image();
     baseImage.src = "https://i.postimg.cc/7hspBx1J/Whats-App-Image-2025-06-05-at-1-33-48-PM.jpg";
     baseImage.onload = drawCard;
@@ -34,41 +39,33 @@
     function drawCard() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
-      const name = document.getElementById('userName').value.trim();
+      const name = document.getElementById("userName").value.trim();
       if (name) {
         ctx.font = "30px Arial";
         ctx.fillStyle = "#00008B";
         ctx.textAlign = "center";
-        ctx.fillText("عيدكم مبارك مع: " + name, canvas.width/2, canvas.height - 50);
+        ctx.fillText("عيدكم مبارك مع: " + name, canvas.width / 2, canvas.height - 50);
+        document.getElementById("shareLinkNote").classList.remove("hidden");
+      } else {
+        document.getElementById("shareLinkNote").classList.add("hidden");
       }
     }
 
-    async function shareImage() {
-      const name = document.getElementById('userName').value.trim();
+    function generateImageLink() {
+      const name = document.getElementById("userName").value.trim();
       if (!name) {
         alert('يرجى كتابة اسمك أولاً.');
         return;
       }
-      // حوّل الـ Canvas إلى Blob
-      canvas.toBlob(async function(blob) {
-        // استخدم Web Share API إذا متاح (غالباً على الجوال)
-        if (navigator.canShare && navigator.canShare({ files: [new File([blob], "بطاقة_تهنئة.png", {type:"image/png"})] })) {
-          const file = new File([blob], "بطاقة_تهنئة.png", {type:"image/png"});
-          try {
-            await navigator.share({
-              files: [file],
-              title: "بطاقة تهنئة",
-              text: "بطاقة تهنئة باسمك، أرسلها لأحبابك!"
-            });
-          } catch(e) {
-            alert('تم إلغاء المشاركة أو هناك مشكلة.');
-          }
-        } else {
-          // إذا لم تتوفر Web Share API، اعرض الصورة ليحفظها المستخدم يدوياً
-          const url = URL.createObjectURL(blob);
-          const w = window.open();
-          w.document.write('<h2>احفظ الصورة بالضغط عليها مطولاً</h2><img src="'+url+'" style="width:90%;margin:24px auto;display:block;border-radius:16px;box-shadow:0 4px 14px #0002;" />');
-        }
+
+      // تحويل الصورة إلى Blob
+      canvas.toBlob(function(blob) {
+        // إنشاء رابط URL للصورة
+        const imageUrl = URL.createObjectURL(blob);
+        
+        // عرض الرابط في حقل النص
+        const shareLink = document.getElementById("shareLink");
+        shareLink.value = imageUrl; // عرض الرابط الذي يمكن مشاركته
       }, 'image/png');
     }
   </script>

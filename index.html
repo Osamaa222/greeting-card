@@ -69,14 +69,15 @@
   <h1>أنشئ بطاقة تهنئة باسمك</h1>
   <input type="text" id="userName" placeholder="أدخل اسمك هنا" oninput="updateCardText()" />
   <br />
-  <button onclick="downloadImage()">تحميل كصورة (PNG)</button>
+  <button onclick="generateImageLink()">شارك الصورة</button>
 
   <div id="card-container">
-    <canvas id="cardCanvas" width="500" height="900"></canvas>
+    <canvas id="cardCanvas" width="600" height="900"></canvas>
   </div>
 
   <div class="note" id="downloadNote">
-    <p>تم إنشاء البطاقة بنجاح! يمكنك تحميلها الآن.</p>
+    <p>تم إنشاء البطاقة بنجاح! يمكنك مشاركتها عبر الرابط.</p>
+    <input type="text" id="shareLink" readonly style="width: 80%; max-width: 300px; padding: 10px; margin-top: 20px; font-size: 16px; text-align: center;" />
   </div>
 
   <script>
@@ -96,7 +97,7 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);  // إعادة رسم الصورة الأساسية
         ctx.font = "30px Arial";
-        ctx.fillStyle = "#f0f0f5";
+        ctx.fillStyle = "#00008B";
         ctx.textAlign = "center";
         ctx.fillText("عيدكم مبارك مع : " + name, canvas.width / 2, canvas.height - 50);
         document.getElementById("downloadNote").style.display = "block";
@@ -105,23 +106,18 @@
       }
     }
 
-    function downloadImage() {
+    function generateImageLink() {
       const name = document.getElementById("userName").value.trim();
       if (!name) {
         alert("يرجى إدخال الاسم أولاً.");
         return;
       }
 
-      // استخدام canvas.toBlob لتحميل الصورة بشكل موثوق
+      // تحويل الصورة إلى Blob ثم تحويلها إلى رابط URL
       canvas.toBlob(function(blob) {
-        // تخزين الصورة على الجهاز بشكل مباشر
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'بطاقة_تهنئة.png';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const imageUrl = URL.createObjectURL(blob);
+        const link = document.getElementById("shareLink");
+        link.value = imageUrl;  // إظهار الرابط الذي يمكن مشاركته
       }, 'image/png');
     }
   </script>

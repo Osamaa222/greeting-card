@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>بطاقة تهنئة مخصصة</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -52,7 +51,6 @@
   <h1>أنشئ بطاقة تهنئة باسمك</h1>
   <input type="text" id="userName" placeholder="أدخل اسمك هنا" />
   <br />
-  <button onclick="generateCard()">إنشاء وتحميل البطاقة (PDF)</button>
   <button onclick="downloadImage()">تحميل كصورة (PNG)</button>
 
   <div id="card-container">
@@ -74,27 +72,6 @@
       ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
     };
 
-    function generateCard() {
-      const name = document.getElementById("userName").value.trim();
-      if (!name) {
-        alert("يرجى إدخال الاسم أولاً.");
-        return;
-      }
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
-
-      ctx.font = "30px Arial";
-      ctx.fillStyle = "#f0f0f5";
-      ctx.textAlign = "center";
-      ctx.fillText("عيدكم مبارك مع: " + name, canvas.width / 2, canvas.height - 50);
-
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: [600, 400] });
-      pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, 600, 400);
-      pdf.save("بطاقة_تهنئة.pdf");
-    }
-
     function downloadImage() {
       const name = document.getElementById("userName").value.trim();
       if (!name) {
@@ -104,36 +81,18 @@
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
-      ctx.font = "30px Arial";
-      ctx.fillStyle = "#00008B";
+      ctx.font = "24px Arial";
+      ctx.fillStyle = "#f0f0f5";
       ctx.textAlign = "center";
       ctx.fillText("عيدكم مبارك مع : " + name, canvas.width / 2, canvas.height - 50);
 
       const imageDataUrl = canvas.toDataURL('image/png');
 
-      // تحويل البيانات إلى Blob
-      const imageBlob = dataURLToBlob(imageDataUrl);
-
-      // إنشاء رابط لتحميل الصورة
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(imageBlob);
-      link.download = 'بطاقة_تهنئة.png';
-
-      // محاكاة النقر على الرابط لتحميل الصورة
-      link.click();
-    }
-
-    function dataURLToBlob(dataURL) {
-      const byteString = atob(dataURL.split(',')[1]);
-      const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
-      const arrayBuffer = new ArrayBuffer(byteString.length);
-      const uintArray = new Uint8Array(arrayBuffer);
-
-      for (let i = 0; i < byteString.length; i++) {
-        uintArray[i] = byteString.charCodeAt(i);
-      }
-
-      return new Blob([uintArray], { type: mimeString });
+      // فتح الصورة في نافذة جديدة مع زر تحميل
+      const newWindow = window.open();
+      newWindow.document.write('<img src="' + imageDataUrl + '" alt="بطاقة تهنئة" />');
+      newWindow.document.write('<a href="' + imageDataUrl + '" download="بطاقة_تهنئة.png"><button>تحميل الصورة</button></a>');
+      newWindow.document.close();
     }
   </script>
 </body>

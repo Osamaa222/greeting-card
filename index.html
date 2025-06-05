@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>بطاقة تهنئة مخصصة</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -96,13 +97,28 @@
         return;
       }
 
+      // الحصول على بيانات الصورة من الـ Canvas
       const imageDataUrl = canvas.toDataURL('image/png');
 
-      // فتح الصورة في نافذة جديدة مع رابط تحميل
-      const newWindow = window.open();
-      newWindow.document.write('<img src="' + imageDataUrl + '" alt="بطاقة تهنئة" style="width:100%;height:auto;" />');
-      newWindow.document.write('<a href="' + imageDataUrl + '" download="بطاقة_تهنئة.png"><button>تحميل الصورة</button></a>');
-      newWindow.document.close();
+      // تحويل الـ DataURL إلى Blob
+      const imageBlob = dataURLToBlob(imageDataUrl);
+
+      // استخدام FileSaver.js لتحميل الصورة بشكل احترافي
+      saveAs(imageBlob, 'بطاقة_تهنئة.png');
+    }
+
+    // تحويل DataURL إلى Blob
+    function dataURLToBlob(dataURL) {
+      const byteString = atob(dataURL.split(',')[1]);
+      const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+      const arrayBuffer = new ArrayBuffer(byteString.length);
+      const uintArray = new Uint8Array(arrayBuffer);
+
+      for (let i = 0; i < byteString.length; i++) {
+        uintArray[i] = byteString.charCodeAt(i);
+      }
+
+      return new Blob([uintArray], { type: mimeString });
     }
   </script>
 </body>

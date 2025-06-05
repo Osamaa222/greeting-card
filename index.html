@@ -61,7 +61,7 @@
   </div>
 
   <div class="note">
-    ملاحظة: على الهاتف، إذا لم يتم تحميل البطاقة تلقائيًا، اضغط مطولاً على الصورة ثم اختر "تنزيل" أو تحقق من مجلد التنزيلات.
+    ملاحظة: على الهاتف، سيتم عرض الصورة في صفحة جديدة. اضغط مطولاً على الصورة واختر "تنزيل الصورة".
   </div>
 
   <script>
@@ -69,7 +69,7 @@
     const ctx = canvas.getContext("2d");
 
     const baseImage = new Image();
-    baseImage.src = "https://i.postimg.cc/7hspBx1J/Whats-App-Image-2025-06-05-at-1-33-48-PM.jpg";
+    baseImage.src = "https://via.placeholder.com/600x400.png?text=بطاقة+تهنئة";
 
     baseImage.onload = () => {
       ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
@@ -110,12 +110,14 @@
       ctx.font = "30px Arial";
       ctx.fillStyle = "#00008B";
       ctx.textAlign = "center";
-      ctx.fillText("عيدكم مبارك مع: " + name, canvas.width / 2, canvas.height - 50);
+      ctx.fillText("عيدكم مبارك مع : " + name, canvas.width / 2, canvas.height - 50);
 
-      const link = document.createElement('a');
-      link.download = 'بطاقة_تهنئة.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+      const imageDataUrl = canvas.toDataURL('image/png');
+
+      // فتح الصورة في تبويب جديد بدلاً من التحميل التلقائي
+      const newTab = window.open();
+      newTab.document.write(`<img src="${imageDataUrl}" style="width:100%;height:auto;" alt="بطاقة تهنئة" />`);
+      newTab.document.title = "بطاقة تهنئة";
 
       updateWhatsAppLink(name);
     }

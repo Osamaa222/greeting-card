@@ -63,20 +63,23 @@
       color: #555;
       margin-top: 10px;
     }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <h1>أنشئ بطاقة تهنئة باسمك</h1>
   <input type="text" id="userName" placeholder="أدخل اسمك هنا" oninput="updateCardText()" />
   <br />
-  <button onclick="generateImageLink()">شارك الصورة</button>
+  <button onclick="generateImageLink()">مشاركة الصورة عبر الرابط</button>
 
   <div id="card-container">
     <canvas id="cardCanvas" width="600" height="900"></canvas>
   </div>
 
-  <div class="note" id="downloadNote">
-    <p>تم إنشاء البطاقة بنجاح! يمكنك مشاركتها عبر الرابط.</p>
+  <div class="note hidden" id="shareLinkNote">
+    <p>تم إنشاء البطاقة بنجاح! يمكنك مشاركة الصورة عبر الرابط:</p>
     <input type="text" id="shareLink" readonly style="width: 80%; max-width: 300px; padding: 10px; margin-top: 20px; font-size: 16px; text-align: center;" />
   </div>
 
@@ -100,9 +103,9 @@
         ctx.fillStyle = "#00008B";
         ctx.textAlign = "center";
         ctx.fillText("عيدكم مبارك مع : " + name, canvas.width / 2, canvas.height - 50);
-        document.getElementById("downloadNote").style.display = "block";
+        document.getElementById("shareLinkNote").classList.remove("hidden");
       } else {
-        document.getElementById("downloadNote").style.display = "none";
+        document.getElementById("shareLinkNote").classList.add("hidden");
       }
     }
 
@@ -113,11 +116,14 @@
         return;
       }
 
-      // تحويل الصورة إلى Blob ثم تحويلها إلى رابط URL
+      // تحويل الصورة إلى Blob
       canvas.toBlob(function(blob) {
+        // إنشاء رابط URL للصورة
         const imageUrl = URL.createObjectURL(blob);
-        const link = document.getElementById("shareLink");
-        link.value = imageUrl;  // إظهار الرابط الذي يمكن مشاركته
+        
+        // عرض الرابط في حقل النص
+        const shareLink = document.getElementById("shareLink");
+        shareLink.value = imageUrl; // عرض الرابط الذي يمكن مشاركته
       }, 'image/png');
     }
   </script>

@@ -114,12 +114,14 @@
 
       // استخدام canvas.toBlob لتحميل الصورة بشكل موثوق
       canvas.toBlob(function(blob) {
-        // فتح الصورة في نافذة جديدة
-        const newWindow = window.open();
-        const imageURL = URL.createObjectURL(blob);
-        newWindow.document.write('<img src="' + imageURL + '" alt="بطاقة تهنئة" style="width:100%;height:auto;" />');
-        newWindow.document.write('<a href="' + imageURL + '" download="بطاقة_تهنئة.png"><button>تحميل الصورة</button></a>');
-        newWindow.document.close();
+        // تخزين الصورة على الجهاز بشكل مباشر
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'بطاقة_تهنئة.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }, 'image/png');
     }
   </script>
